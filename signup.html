@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Village Mart - Signup</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      margin: 0;
+      background: #e6f2ff;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      padding: 30px 25px;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      position: relative;
+      box-shadow: 0 0 16px rgba(0, 0, 0, 0.15);
+    }
+    .back-home {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 14px;
+      color: #007bff;
+      cursor: pointer;
+    }
+    h2 {
+      text-align: center;
+      color: #0084ff;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      width: 100%;
+      background: #0084ff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .switch-link {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+    .switch-link a {
+      color: #0084ff;
+      cursor: pointer;
+    }
+
+    #success-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    #success-overlay div {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      font-size: 18px;
+      color: green;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+
+    /* Popup message box */
+    #popup-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #ffffff;
+      color: #333;
+      padding: 16px 24px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 9999;
+      font-size: 16px;
+      animation: fadeInOut 3s ease forwards;
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translate(-50%, -60%); }
+      10% { opacity: 1; transform: translate(-50%, -50%); }
+      90% { opacity: 1; transform: translate(-50%, -50%); }
+      100% { opacity: 0; transform: translate(-50%, -40%); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="back-home" onclick="window.location.href='index.html'">&larr; Back to Home</div>
+  <h2>Village Mart</h2>
+
+  <form id="signup-form">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="signup-name" required />
+    </div>
+    <div class="form-group">
+      <label>Mobile Number</label>
+      <input type="text" id="signup-mobile" required />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="signup-pass" required />
+    </div>
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input type="password" id="signup-confirm" required />
+    </div>
+    <button type="submit">Sign Up</button>
+
+    <div class="switch-link">
+      Already have an account? <a href="login.html">Login</a>
+    </div>
+  </form>
+</div>
+
+<div id="success-overlay">
+  <div>✅ Signup Successful!<br><br>Redirecting to Login...</div>
+</div>
+
+<!-- Popup message -->
+<div id="popup-message"></div>
+
+<script>
+  function showMessage(message) {
+    const popup = document.getElementById('popup-message');
+    popup.innerText = message;
+    popup.style.display = 'block';
+    setTimeout(() => {
+      popup.style.display = 'none';
+    }, 3000);
+  }
+
+  document.getElementById('signup-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('signup-name').value.trim();
+    const mobile = document.getElementById('signup-mobile').value.trim();
+    const password = document.getElementById('signup-pass').value;
+    const confirm = document.getElementById('signup-confirm').value;
+
+    if (password !== confirm) {
+      showMessage("❌ Passwords do not match!");
+      return;
+    }
+
+    if (!username || !mobile || !password) {
+      showMessage("❌ Please fill all fields!");
+      return;
+    }
+
+    // Send data to backend Neon
+    try {
+      const response = await fetch('http://localhost:5000/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, mobile, password })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        document.getElementById('success-overlay').style.display = 'flex';
+        setTimeout(() => {
+          document.getElementById('success-overlay').style.display = 'none';
+          window.location.href = "login.html";
+        }, 3000);
+      } else {
+        showMessage("❌ " + data.error);
+      }
+    } catch (err) {
+      showMessage("❌ Server error. Try again.");
+    }
+  });
+</script>
+
+</body>
+</html>
