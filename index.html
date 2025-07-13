@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Village Mart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #e0f7fa;
+      color: #333;
+    }
+
+    /* Splash screen */
+  #splash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #e0f7fa;
+  animation: fadeOut 1s ease forwards;
+  animation-delay: 5s;
+  z-index: 9999;
+}
+
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    #splash img {
+  width: 150px;
+  height: auto;
+  animation: zoomIn 2s ease-in-out infinite;
+}
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes rotateBot {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+#chatbot-toggle.rotating {
+  animation: rotateBot 5s linear;
+}
+
+
+#made-in-india {
+  margin-top: 40px;
+  font-size: 16px;
+  color: #00796b;
+  font-weight: 600;
+  animation: fadeInUp 2s ease-in-out;
+}
+.location.animate {
+  animation: slideInLeft 1s ease forwards;
+}
+
+
+    @keyframes zoomIn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .location::before {
+      content: "📍";
+      margin-right: 5px;
+    }
+
+    .profile {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .profile img {
+      width: 35px;
+      border-radius: 50%;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .dropdown a:hover {
+      background: #f0f0f0;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 30px 0 20px;
+      color: #00796b;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .card {
+      width: 150px;
+      background: #fff;
+      border-radius: 10px;
+      text-align: center;
+      padding: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+  #chatbot-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #0084ff;
+  color: #fff;
+  padding: 12px;
+  border-radius: 50%;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 1000;
+}
+
+
+#chatbot-box {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 280px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+  display: none;
+  flex-direction: column;
+  padding: 10px;
+  z-index: 1000;
+}
+
+#chatbot-messages {
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: Arial, sans-serif;
+}
+
+.bot, .user {
+  margin: 8px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  max-width: 90%;
+}
+
+.bot {
+  background: #f1f0f0;
+  align-self: flex-start;
+}
+
+.user {
+  background: #d1eaff;
+  align-self: flex-end;
+}
+
+.options button {
+  display: block;
+  width: 100%;
+  margin: 4px 0;
+  padding: 8px;
+  border: none;
+  background: #e0f7fa;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+#upload-box {
+  margin-top: 10px;
+}
+    
+
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 45%;
+      }
+    }
+    body {
+  transition: background-color 2s ease;
+}
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.grid.animate-in {
+  animation: fadeSlideUp 0.8s ease forwards;
+}
+
+/* Animate each card with a delay */
+.card {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: bounceUp 0.6s ease forwards;
+}
+
+/* Delay each card dynamically using nth-child */
+.card:nth-child(1) { animation-delay: 0.2s; }
+.card:nth-child(2) { animation-delay: 0.4s; }
+.card:nth-child(3) { animation-delay: 0.6s; }
+.card:nth-child(4) { animation-delay: 0.8s; }
+.card:nth-child(5) { animation-delay: 1s; }
+.card:nth-child(6) { animation-delay: 1.2s; }
+.card:nth-child(7) { animation-delay: 1.4s; }
+.card:nth-child(8) { animation-delay: 1.6s; }
+
+@keyframes bounceUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-10px) scale(1.03);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+
+
+  </style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <img src="logo.png" alt="Village Mart Logo" />
+</div>
+
+<!-- Main Page -->
+<div id="main" style="display: none;">
+  <div class="header">
+    <div class="location" id="location">Detecting location...</div>
+    <div class="profile" onclick="toggleDropdown()">
+      <img src="https://img.icons8.com/ios-filled/50/000000/user-male-circle.png" alt="Profile" />
+      <div class="dropdown" id="profileDropdown">
+        <a href="login.html">Login</a>
+        <a href="login.html">Sign Up</a>
+        <a href="#">Order Details</a>
+        <a href="#">Payment History</a>
+        <a href="#">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <h1 class="title">Village Mart</h1>
+
+ <div class="grid">
+  <div class="card" onclick="goToPage('groc.html')">
+    <video src="video/bg11.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>Groceries</div>
+  </div>
+  <div class="card" onclick="goToPage('foods.html')">
+    <video src="video/veg.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>All Foods</div>
+  </div>
+  <div class="card" onclick="goToPage('pickles.html')">
+    <video src="video/pickels.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>Pickles</div>
+  </div>
+  <div class="card" onclick="goToPage('Cooking.html')">
+    <video src="video/kit.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>Cooking Items</div>
+  </div>
+  <div class="card" onclick="goToPage('junk.html')">
+    <video src="video/snaks.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>Fast Foods</div>
+  </div>
+  <div class="card" onclick="goToPage('sliipers/slipers men.html')">
+    <video src="video/sliipers.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>Slippers</div>
+  </div>
+  <div class="card" onclick="goToPage('fruits/fruits.html')">
+    <video src="video/fruits.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>Fruits</div>
+  </div>
+  <div class="card" onclick="goToPage('clothes men/menclothes.html')">
+    <video src="video/clothes.mp4" width="80" height="80" autoplay loop muted playsinline style="object-fit: cover; margin-bottom: 10px; border-radius: 10px;"></video>
+    <div>Clothes</div>
+  </div>
+</div>
+
+  <!-- Chatbot Button -->
+<div id="chatbot-toggle" onclick="toggleChatbot()">🤖</div> 
+
+
+<!-- Chatbot Window -->
+<div id="chatbot-box">
+  <div id="chatbot-messages">
+    <div class="bot">Hi! How can I help you?</div>
+    <div class="options">
+      <button onclick="handleOption('payment')">💳 Payment History</button>
+      <button onclick="handleOption('support')">🛠 Contact Support</button>
+      <button onclick="handleOption('call')">📞 Call Us</button>
+      <button onclick="handleOption('order')">📦 Order Details</button>
+      <button onclick="handleOption('issue')">❗ Issue with Product</button>
+    </div>
+  </div>
+  <div id="upload-box" style="display: none;">
+    <input type="file" id="imageUpload" accept="image/*" onchange="uploadImage()">
+  </div>
+</div>
+
+
+  <div class="footer">
+    © 2025 All rights reserved
+  </div>
+</div>
+
+<script>
+  // Splash screen transition
+  setTimeout(() => {
+  document.getElementById('splash').style.display = 'none';
+  const main = document.getElementById('main');
+  main.style.display = 'block';
+
+  // Add animation class
+  document.querySelector('.grid').classList.add('animate-in');
+  
+  // Trigger card animation manually
+  document.querySelectorAll('.card').forEach(card => {
+    card.style.opacity = '1';
+  });
+}, 5000);
+
+  // Get user current location using browser geolocation
+  function getUserLocation() {
+    const locationDiv = document.getElementById('location');
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(position => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        // Reverse geocode using OpenStreetMap
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`)
+          .then(res => res.json())
+          .then(data => {
+            const village = data.address.village || data.address.town || data.address.city || "Your Area";
+            const state = data.address.state || "";
+
+            // Add location with animation
+            locationDiv.innerText = `${village}, ${state}`;
+            locationDiv.classList.add('animate');
+          })
+          .catch(() => {
+            locationDiv.innerText = "Location unavailable";
+          });
+      }, () => {
+        locationDiv.innerText = "Permission denied";
+      });
+    } else {
+      locationDiv.innerText = "Geolocation not supported";
+    }
+  }
+
+  getUserLocation(); // Call it on load
+
+  // Toggle profile dropdown
+  function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+  // Go to another page
+  function goToPage(url) {
+    window.location.href = url;
+  }
+
+  // Close dropdown if clicked outside
+  window.onclick = function(event) {
+    if (!event.target.closest('.profile')) {
+      document.getElementById("profileDropdown").style.display = "none";
+    }
+  }
+    let chatbotOpen = false;
+
+  function toggleChatbot() {
+    chatbotOpen = !chatbotOpen;
+    document.getElementById('chatbot-box').style.display = chatbotOpen ? 'flex' : 'none';
+  }
+
+  function handleOption(option) {
+    const messages = document.getElementById("chatbot-messages");
+    const uploadBox = document.getElementById("upload-box");
+
+    // Show user reply
+    const userReply = document.createElement("div");
+    userReply.className = "user";
+    userReply.innerText = optionToText(option);
+    messages.appendChild(userReply);
+
+    // Bot response
+    const botReply = document.createElement("div");
+    botReply.className = "bot";
+
+    if (option === "issue") {
+      botReply.innerText = "Thank you! Please upload a picture of the issue:";
+      uploadBox.style.display = "block";
+    } else {
+      botReply.innerText = "Thank you! We will get back to you soon as possible.";
+    }
+
+    messages.appendChild(botReply);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function optionToText(option) {
+    switch(option) {
+      case 'payment': return 'Payment History';
+      case 'support': return 'Contact Support';
+      case 'call': return 'Call Us';
+      case 'order': return 'Order Details';
+      case 'issue': return 'Issue with Product';
+    }
+  }
+
+  function uploadImage() {
+    const fileInput = document.getElementById("imageUpload");
+    const file = fileInput.files[0];
+    if (file) {
+      // Simulate sending to link1addthis
+      const botReply = document.createElement("div");
+      botReply.className = "bot";
+      botReply.innerText = "Image uploaded to link1addthis. We will get back to you soon as possible.";
+      document.getElementById("chatbot-messages").appendChild(botReply);
+      document.getElementById("upload-box").style.display = "none";
+    }
+  }
+</script>
+
+
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Village Mart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: #e0f7fa;
+      color: #333;
+    }
+
+    /* Splash screen */
+    #splash {
+      position: fixed;
+      background: #e0f7fa;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeOut 1s ease forwards;
+      animation-delay: 5s;
+      z-index: 9999;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+    #splash img {
+      width: 150px;
+      animation: zoomIn 2s ease-in-out infinite;
+    }
+
+    @keyframes zoomIn {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .location {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+    }
+
+    .location::before {
+      content: "📍";
+      margin-right: 5px;
+    }
+
+    .profile {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .profile img {
+      width: 35px;
+      border-radius: 50%;
+    }
+
+    .dropdown {
+      display: none;
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .dropdown a:hover {
+      background: #f0f0f0;
+    }
+
+    .title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin: 30px 0 20px;
+      color: #00796b;
+    }
+
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .card {
+      width: 150px;
+      background: #fff;
+      border-radius: 10px;
+      text-align: center;
+      padding: 15px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        width: 45%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Splash -->
+<div id="splash">
+  <img src="logo.png" alt="Village Mart Logo" />
+  <div id="made-in-india">Made in India ❤️</div>
+</div>
+
+<!-- Main Page -->
+<div id="main" style="display: none;">
+  <div class="header">
+    <div class="location" id="location">Detecting location...</div>
+    <div class="profile" onclick="toggleDropdown()">
+      <img src="https://img.icons8.com/ios-filled/50/000000/user-male-circle.png" alt="Profile" />
+      <div class="dropdown" id="profileDropdown">
+        <a href="#">Login</a>
+        <a href="#">Sign Up</a>
+        <a href="#">Order Details</a>
+        <a href="#">Payment History</a>
+        <a href="#">Logout</a>
+      </div>
+    </div>
+  </div>
+
+  <h1 class="title">Village Mart</h1>
+
+  <div class="grid">
+    <div class="card" onclick="goToPage('groceries.html')">
+      <img src="oils.png" alt="Groceries" width="96" height="96" />
+      <div>Groceries</div>
+    </div>
+    <div class="card">
+      <img src="vegetables.png" alt="Veg Food" width="96" height="96" />
+      <div>Veg Food</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/meat.png" alt="Non-Veg" />
+      <div>Non-Veg</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/popcorn.png" alt="Snacks" />
+      <div>Snacks</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/milk-bottle.png" alt="Dairy" />
+      <div>Dairy</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/apple.png" alt="Fruits" />
+      <div>Fruits</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/soda-bottle.png" alt="Beverages" />
+      <div>Beverages</div>
+    </div>
+    <div class="card">
+      <img src="https://img.icons8.com/color/96/cleaning.png" alt="Home Needs" />
+      <div>Home Needs</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    © 2025 All rights reserved
+  </div>
+</div>
+
+<script>
+  // Splash screen transition
+  setTimeout(() => {
+    document.getElementById('splash').style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+  }, 5000);
+
+  // Toggle profile dropdown
+  function toggleDropdown() {
+    const dropdown = document.getElementById("profileDropdown");
+    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+  }
+
+  // Go to another page
+  function goToPage(url) {
+    window.location.href = url;
+  }
+
+  // Get user location (village + state only)
+  fetch('https://ipapi.co/json/')
+    .then(response => response.json())
+    .then(data => {
+      const locationDiv = document.getElementById('location');
+      locationDiv.innerText = `${data.city || 'Your Village'}, ${data.region}`;
+    })
+    .catch(() => {
+      document.getElementById('location').innerText = 'Location unavailable';
+    });
+
+  // Close dropdown if clicked outside
+  window.onclick = function(event) {
+    if (!event.target.closest('.profile')) {
+      document.getElementById("profileDropdown").style.display = "none";
+    }
+  }
+  const colors = ['#e0f7fa', '#fff3e0', '#f3e5f5', '#e8f5e9', '#ede7f6', '#fbe9e7'];
+  let current = 0;
+
+  setInterval(() => {
+    document.body.style.backgroundColor = colors[current];
+    current = (current + 1) % colors.length;
+  }, 3000);
+
+  const botIcon = document.getElementById("chatbot-toggle");
+
+  function startRotationLoop() {
+    botIcon.classList.add("rotating");
+
+    setTimeout(() => {
+      botIcon.classList.remove("rotating");
+    }, 5000); // Stop after 5s
+
+    setTimeout(startRotationLoop, 10000); // Repeat every 10s
+  }
+
+  startRotationLoop(); // Start the cycle
+</script>
+
+</body>
+</html>
